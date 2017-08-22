@@ -33,8 +33,9 @@ module OmniAuth
         {
           :nickname => raw_info['screen_name'],
           :name => raw_info['name'],
+          :email => raw_info["email"],
           :location => raw_info['location'],
-          :image => image_url(options),
+          :image => image_url,
           :description => raw_info['description'],
           :urls => {
             'Website' => raw_info['url'],
@@ -44,7 +45,7 @@ module OmniAuth
       end
 
       extra do
-        { :raw_info => raw_info }
+        skip_info? ? {} : { :raw_info => raw_info  }
       end
 
       credentials do
@@ -52,7 +53,9 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= JSON.parse(access_token.get('/1.1/account/verify_credentials.json?include_entities=false&skip_status=true').body) || {}
+        @raw_info ||= JSON.parse(access_token.get('/1.1/account/verify_credentials.json?include_entities=false&skip_status=true&include_email=true').body) || {}
+      rescue ::Errno::ETIMEDOUT
+        raise ::Timeout::Error
       end
 
       def client
@@ -118,7 +121,7 @@ module OmniAuth
         )
       end
 
-      def image_url(options)
+      def image_url
         original_url = options[:secure_image_url] ? raw_info['profile_image_url_https'] : raw_info['profile_image_url']
         case options[:image_size]
         when 'mini'

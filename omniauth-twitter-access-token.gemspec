@@ -3,7 +3,7 @@ require File.expand_path('../lib/omniauth-twitter-access-token/version', __FILE_
 
 Gem::Specification.new do |gem|
   gem.add_dependency 'omniauth', '~> 1.0'
-  gem.add_dependency 'oauth', '~> 0.4.7'
+  gem.add_dependency 'oauth', '~> 0.4'
 
   gem.authors       = ["Tom de Grunt"]
   gem.email         = ["tom@degrunt.nl"]
